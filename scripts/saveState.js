@@ -221,7 +221,7 @@ function glueActionsAndSave (action, postAction) {
         preAction: action.preAction,
         postAction: postAction
     };
-    //console.log("incoming ideal action: ", idealAction);
+    alert("incoming ideal action: ", idealAction);
     
     //Save it to local
     var currArray = getSubgoalArrayFromLocal();
@@ -231,13 +231,13 @@ function glueActionsAndSave (action, postAction) {
     else {
         var targetSubgoal = currArray[(currArray.length - 1)];      //The last subgoal added
         targetSubgoal.actions.push(idealAction);
-        //console.log("sub with action: ", targetSubgoal);
+        alert("sub with action: ", targetSubgoal);
         currArray[(currArray.length - 1)] = targetSubgoal;
         localStorage.setItem("subgoalArray", JSON.stringify(currArray));   //Update the subgoal array
 		
 		//Rebind the onclick of the side list action to show the answers
 		var sideActionIdToFind = "#sideAction" + targetSubgoal.id + "-" + idealAction.id;
-		//console.log("Rebinding onclick to loadAnswers...");
+		alert("Rebinding onclick to loadAnswers...");
 		sidebarBody().find(sideActionIdToFind).unbind( "click" ).click(function(){
 			loadActionAnswersTemplate(idealAction.id, targetSubgoal.id);
 		});
@@ -253,7 +253,7 @@ function glueActionsAndSave (action, postAction) {
 function saveVarToLocal (nameOfThingToSave, thingToSave) {
 		alert("function saveVarToLocal");
 	localStorage.setItem(nameOfThingToSave, JSON.stringify(thingToSave));
-	//console.log("Saved: " + nameOfThingToSave + " " + thingToSave);
+	alert("Saved: " + nameOfThingToSave + " " + thingToSave);
 }
 
 
@@ -265,11 +265,11 @@ function saveVarToLocal (nameOfThingToSave, thingToSave) {
 function getVarFromLocal (nameOfThing) {
 	var item = JSON.parse(localStorage.getItem(nameOfThing));
 	if (item) {
-		//console.log("Found: " + nameOfThing + " " + item);
+		alert("Found: " + nameOfThing + " " + item);
 		return item;
 	}
 	else {
-		//console.log("Couldn't find variable " + nameOfThing + "in local storage");
+		alert("Couldn't find variable " + nameOfThing + "in local storage");
 		return "";
 	}
 }
@@ -282,7 +282,7 @@ function getVarFromLocal (nameOfThing) {
 function getSubgoalArrayFromLocal() {
     var currObj = JSON.parse(localStorage.getItem('subgoalArray'));
     if (!currObj) {
-        //console.log("Couldn't find subgoalArray in local storage");
+        alert("Couldn't find subgoalArray in local storage");
         return null;
     }
     else{
