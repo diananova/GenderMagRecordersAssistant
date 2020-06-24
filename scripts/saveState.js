@@ -5,12 +5,13 @@
  	sideSubgoalExpandy, loadActionAnswersTemplate, showMeTheStringYNM, showMeTheStringFacets
  * Description: This file contains functions to handle local storage/organization of subgoals and actions
  */
-
+alert("Savestate.js file ");
 var subgoalArray = [];
 
 //Creates a new subgoal and saves it to local storage at the end of subgoalArray
 function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
-	alert("calling saveSubgoal");
+
+	alert("function saveSubgoal: id= " + id + " name = " name);
 
 	var subgoal = {
 		id: id,
@@ -23,9 +24,11 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
 
 //might be causing bugs
 //problem: using id for array index?
+
 	alert("saveSubgoal subgoal id: " + id);
-	if(id > subgoalArray.length){  // new subgoal? // the first subgoal (length = 0)
+	if(id > subgoalArray.length){  // the first subgoal (length = 0)
 		alert("saveSubgoal if block"); /**/
+
 
 		var subArr = getSubgoalArrayFromLocal(); // from local storage
 		if (!subArr) {  
@@ -35,8 +38,9 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
 		localStorage.setItem("subgoalArray", JSON.stringify(subArr));  //update subgoalArray in local storage	
         addToSandwich("subgoal",subgoal);
 	}
-	else{  //update existing subgoal? // add subgoals after the first
+	else{  // add subgoals after the first
 		alert("saveSubgoal else block");
+
 
 		var subArr = getSubgoalArrayFromLocal();
 		subArr[id-1] = subgoal;
@@ -50,7 +54,8 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
  * Params: type - either subgoal or idealAction, item - the object (either subgoal or action)
  */
 function addToSandwich(type, item){
-	alert("calling addToSandwich");
+
+	alert("calling addToSandwich: type= " + type + " , item = "+ item);
 	
 	if(!type.localeCompare("subgoal")){ 
 		alert("addToSandwich subgoal if"); /**/
@@ -151,12 +156,14 @@ function addToSandwich(type, item){
 	}
     
     else {
-        console.log("Something went wrong in addToSandwich OH GOD PANIC", type, item);
+        alert("Something went wrong in addToSandwich OH GOD PANIC", type, item);
     }
 	
 }
 
+//defines what a preIdealAction, postIdealAction, and idealAction are
 function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyTextPost, facetsPost) {
+	alert("function saveIdealAction");
 	var currArray = getSubgoalArrayFromLocal();
 	var targetSubgoal = currArray[(currArray.length - 1)];
 	var preIdealAction = {
@@ -183,6 +190,7 @@ function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyT
 		preAction: preIdealAction,
 		postAction: postIdealAction
 	};
+	
 	localStorage.setItem("currPreAction", JSON.stringify(idealAction));
 	localStorage.setItem("inMiddleOfAction", "true");
 }
@@ -190,7 +198,9 @@ function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyT
 //Creates a new preIdealAction object and saves it to local storage on the current subgoal's actions
 //Pre: subgoalArray isn't empty
 function savePreIdealAction (name, yesnomaybe, whyText, facets) {
-    
+	alert("function savePreIdealAction");
+
+	//gets the current subgoal from the subgoal array
 	var currArray = getSubgoalArrayFromLocal();
 	var targetSubgoal = currArray[(currArray.length - 1)];
 	var preIdealAction = {
@@ -211,6 +221,7 @@ function savePreIdealAction (name, yesnomaybe, whyText, facets) {
 //Creates a new postIdealAction object and saves it to local storage on the current subgoal's actions
 //Pre: subgoalArray isn't empty, and the current preAction isn't null
 function savePostIdealAction (name, yesnomaybe, whyText, facets) {
+	alert("function savePostIdealAction");
     var currPreAction = getVarFromLocal("currPreAction");
 	var postIdealAction = {
 		actionId: currPreAction.actionId,  //Check this when done
@@ -232,8 +243,8 @@ function savePostIdealAction (name, yesnomaybe, whyText, facets) {
 *	Post: target subgoal's actions array has an action object made of pre and post action objects.
 */
 function glueActionsAndSave (action, postAction) {
-    
-    //Get the associated image's URL from local
+    	alert("function glueActionsandSave");
+    //Get the associated image's (screenshot of action) URL from local
     var currImgURL = localStorage.getItem("currImgURL"); 
     //Make the object
     var idealAction = {
@@ -243,23 +254,23 @@ function glueActionsAndSave (action, postAction) {
         preAction: action.preAction,
         postAction: postAction
     };
-    //console.log("incoming ideal action: ", idealAction);
+    alert("incoming ideal action: ", idealAction);
     
     //Save it to local
     var currArray = getSubgoalArrayFromLocal();
     if (!currArray) {
-        console.log("Something went wrong, can't find the subgoal array");
+        alert("Something went wrong, can't find the subgoal array");
     }
     else {
         var targetSubgoal = currArray[(currArray.length - 1)];      //The last subgoal added
         targetSubgoal.actions.push(idealAction);
-        //console.log("sub with action: ", targetSubgoal);
+        alert("sub with action: ", targetSubgoal);
         currArray[(currArray.length - 1)] = targetSubgoal;
         localStorage.setItem("subgoalArray", JSON.stringify(currArray));   //Update the subgoal array
 		
 		//Rebind the onclick of the side list action to show the answers
 		var sideActionIdToFind = "#sideAction" + targetSubgoal.id + "-" + idealAction.id;
-		//console.log("Rebinding onclick to loadAnswers...");
+		alert("Rebinding onclick to loadAnswers...");
 		sidebarBody().find(sideActionIdToFind).unbind( "click" ).click(function(){
 			loadActionAnswersTemplate(idealAction.id, targetSubgoal.id);
 		});
@@ -273,8 +284,9 @@ function glueActionsAndSave (action, postAction) {
 *	Post: item is in local storage.
 */
 function saveVarToLocal (nameOfThingToSave, thingToSave) {
+		alert("function saveVarToLocal");
 	localStorage.setItem(nameOfThingToSave, JSON.stringify(thingToSave));
-	//console.log("Saved: " + nameOfThingToSave + " " + thingToSave);
+	alert("Saved: " + nameOfThingToSave + " " + thingToSave);
 }
 
 
@@ -286,11 +298,11 @@ function saveVarToLocal (nameOfThingToSave, thingToSave) {
 function getVarFromLocal (nameOfThing) {
 	var item = JSON.parse(localStorage.getItem(nameOfThing));
 	if (item) {
-		//console.log("Found: " + nameOfThing + " " + item);
+		alert("Found: " + nameOfThing + " " + item);
 		return item;
 	}
 	else {
-		//console.log("Couldn't find variable " + nameOfThing + "in local storage");
+		alert("Couldn't find variable " + nameOfThing + "in local storage");
 		return "";
 	}
 }
@@ -303,7 +315,7 @@ function getVarFromLocal (nameOfThing) {
 function getSubgoalArrayFromLocal() {
     var currObj = JSON.parse(localStorage.getItem('subgoalArray'));
     if (!currObj) {
-        //console.log("Couldn't find subgoalArray in local storage");
+        alert("Couldn't find subgoalArray in local storage");
         return null;
     }
     else{
@@ -333,11 +345,13 @@ $( window ).unload(function() {
 
 
 //Happens after refresh
+//confused about when this happens exactly
 function reloadSandwich () {
-	console.log("Reloading sandwich menu...");
+	alert("Reloading sandwich menu...");
 	var sidebarHTML = localStorage.getItem('sidebarHTML');
 	//console.log(sidebarHTML);
 	var subgoalDiv = sidebarBody().find('#subgoalList');
+	//check to see if user is on subgoals before refresh
 	if (subgoalDiv && statusIsTrue('finishedPrewalkthrough')) {
 		subgoalDiv.html(sidebarHTML);
 		sidebarBody().find('#subgoalList').children().each(function () {
@@ -353,8 +367,9 @@ function reloadSandwich () {
 			}
             
 			else {
-				//It's an action
+				//User was not on subgoal--was on an action before refresh
 				//console.log("action", currId);
+				//get which action under which subgoal
 				var thisActionNum = Number(currId[currId.length-1]);
                 var thisSubNum = Number(currId[0]);
 				var subgoals = getSubgoalArrayFromLocal();
@@ -373,6 +388,7 @@ function reloadSandwich () {
 							actionName = subgoals[ thisSubNum-1 ].actions[ thisActionNum-1 ].name;
 						}
 						else {
+							//they name the function for the user?
 							actionName = "Lights, Camera";
 						}
 						sidebarBody().find('#actionNameInput').html(actionName);
@@ -382,7 +398,7 @@ function reloadSandwich () {
 				
 			}
 		});
-		console.log("Sandwich menu loaded");
+		alert("Sandwich menu loaded");
 	}
 	else {
 	}

@@ -22,7 +22,7 @@ var screenShotURL;
 	
 	/*Send request to current tab when page action is clicked*/
 	chrome.pageAction.onClicked.addListener(function(tab) {
-		window.open("https://github.com/mendezc1/GenderMagRecordersAssistant");
+		window.open("https://github.com/diananova/GenderMagRecordersAssistant/tree/debug");
 		//TODO: Think about creating open/close function and call it here?
 		/*OLD CODE HERE DON'T DELETE UNTIL TO DO IS RESOLVED*/
 		//chrome.tabs.executeScript(null, { file: "./jquery-ui-1.12.1/jquery.js" }, function() {
