@@ -10,6 +10,8 @@ var subgoalArray = [];
 
 //Creates a new subgoal and saves it to local storage at the end of subgoalArray
 function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
+	alert("calling saveSubgoal");
+
 	var subgoal = {
 		id: id,
 		name: name,
@@ -21,7 +23,10 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
 
 //might be causing bugs
 //problem: using id for array index?
-	if(id > subgoalArray.length){  // new subgoal?
+	alert("saveSubgoal subgoal id: " + id);
+	if(id > subgoalArray.length){  // new subgoal? // the first subgoal (length = 0)
+		alert("saveSubgoal if block"); /**/
+
 		var subArr = getSubgoalArrayFromLocal(); // from local storage
 		if (!subArr) {  
 			subArr = subgoalArray; //if array not found in local storage (first subgoal?), initialize with subgoalArray
@@ -30,7 +35,9 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
 		localStorage.setItem("subgoalArray", JSON.stringify(subArr));  //update subgoalArray in local storage	
         addToSandwich("subgoal",subgoal);
 	}
-	else{  //update existing subgoal? 
+	else{  //update existing subgoal? // add subgoals after the first
+		alert("saveSubgoal else block");
+
 		var subArr = getSubgoalArrayFromLocal();
 		subArr[id-1] = subgoal;
 		localStorage.setItem("subgoalArray", JSON.stringify(subArr));		
@@ -43,23 +50,33 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
  * Params: type - either subgoal or idealAction, item - the object (either subgoal or action)
  */
 function addToSandwich(type, item){
+	alert("calling addToSandwich");
 	
-	if(!type.localeCompare("subgoal")){ 		
+	if(!type.localeCompare("subgoal")){ 
+		alert("addToSandwich subgoal if"); /**/
+
 		var subArr = getSubgoalArrayFromLocal();
 		drawSubgoal(item.id);
         var arrowSRC=chrome.extension.getURL("images/arrow_collapsed.png");
 		var sideSubgoal = '<div stateVar=0 superCoolAttr=' + item.id + ' style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:blue;text-decoration:underline;margin:5px;" id="sideSubgoal' + item.id + '"> <img id="sideSubgoalImg' + item.id + '" src="' + arrowSRC + '"></img> Subgoal ' + item.id + ': ' + item.name + '</div>';
 		// what exactly is the goal here (last subgoal or out of bounds)
+		alert("subgoal id: " + item.id);
+
 		if (item.id >= subArr.length) {
+			alert("addToSandwich id if") /**/
+
             var foundIt = false;
             sidebarBody().find('#subgoalList').children().each(function () {
                 var currId = Number(this.getAttribute('supercoolattr'));
                 if (item.id == currId) {
+                	alert("id if foundit");
                     foundIt = true;
                 }
             });
             // should the item id not be changed to be in bounds?
             if (!foundIt) {
+            	alert("id if !foundit"); /**/
+
                 sidebarBody().find("#subgoalList").append(sideSubgoal);
             }
             
@@ -71,20 +88,28 @@ function addToSandwich(type, item){
 
 			
 	}
-	else if(!type.localeCompare("idealAction") && item.name){ 	
+	else if(!type.localeCompare("idealAction") && item.name){
+		alert("addToSandwich action & !null"); /**/
+
 		var sideAction = '<div superCoolAttr="' + item.subgoalId + '-' + item.actionId + '" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-indent:25px;color:blue;text-decoration:underline;margin:5px;" id="sideAction' + item.subgoalId + '-' + item.actionId + '">Action ' + item.actionId + ': ' + item.name + '</div>';
 		var sideActionIdToFind = item.subgoalId + "-" + item.actionId;
         var sideActionIdForClick = "#sideAction" + item.subgoalId + "-" + item.actionId;
 		var foundIt = false;
 		// update an existing action?
+		alert("action id: " + item.id);
+
 		sidebarBody().find('#subgoalList').children().each(function () {
 			var currId = this.getAttribute('supercoolattr');
 			if (!sideActionIdToFind.localeCompare(currId)) {
+				alert("addToSandwich iter found it");
+
 				foundIt = true;
 			}
 		});
 		// add the action (which already exists?)
 		if (!foundIt) {
+			alert("addToSandwich iter !foundit"); /**/
+
 			sidebarBody().find("#subgoalList").append(sideAction);
 			sideSubgoalExpandy(item.subgoalId, "expand");
             var actionNum = localStorage.getItem("numActions");
@@ -93,6 +118,8 @@ function addToSandwich(type, item){
 		}
 		// simple display
         else {
+        	alert("action else block");
+
             sidebarBody().find(sideActionIdForClick).html('Action ' + item.actionId + ': ' + item.name);
             var currArray = getSubgoalArrayFromLocal();
         }
@@ -103,7 +130,9 @@ function addToSandwich(type, item){
 		});
 	}
 	// create a new action object and add to the list
-	else if(!type.localeCompare("idealAction") && !item){ 	
+	else if(!type.localeCompare("idealAction") && !item){
+		alert("addToSandwich else block");
+
 		var subgoalId = localStorage.getItem("numSubgoals");
 		var actionId = localStorage.getItem("numActions");
 		var actionName = localStorage.getItem("currActionName");
@@ -113,6 +142,8 @@ function addToSandwich(type, item){
 		actionNum++;
 		localStorage.setItem("numActions", actionNum);
         var sideActionIdToFind = "#sideAction" + subgoalId + "-" + actionId;
+        alert(sideActionIdToFind);
+
 		sidebarBody().find(sideActionIdToFind).unbind( "click" ).click(function(){
 			drawAction(actionId, subgoalId);
 		
