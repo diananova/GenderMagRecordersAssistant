@@ -5,12 +5,12 @@
  	sideSubgoalExpandy, loadActionAnswersTemplate, showMeTheStringYNM, showMeTheStringFacets
  * Description: This file contains functions to handle local storage/organization of subgoals and actions
  */
-console.log("Savestate.js file ");
+alert("Savestate.js file ");
 var subgoalArray = [];
 
 //Creates a new subgoal and saves it to local storage at the end of subgoalArray
 function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
-	console.log("function saveSubgoal called with parameters: " + id + name);
+	alert("function saveSubgoal called with parameters: " + id + name);
 	var subgoal = {
 		id: id,
 		name: name,
@@ -23,7 +23,7 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
 //might be causing bugs
 //problem: using id for array index?
 	if(id > subgoalArray.length){  // new subgoal?
-		console.log("new subgoal? id =  " + id);
+		alert("new subgoal? id =  " + id);
 		var subArr = getSubgoalArrayFromLocal(); // from local storage
 		if (!subArr) {  
 			subArr = subgoalArray; //if array not found in local storage (first subgoal?), initialize with subgoalArray
@@ -33,7 +33,7 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
         addToSandwich("subgoal",subgoal);
 	}
 	else{  //update existing subgoal? 
-		console.log("update existing subgoal? id =  " + id);
+		alert("update existing subgoal? id =  " + id);
 		var subArr = getSubgoalArrayFromLocal();
 		subArr[id-1] = subgoal;
 		localStorage.setItem("subgoalArray", JSON.stringify(subArr));		
@@ -46,7 +46,7 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
  * Params: type - either subgoal or idealAction, item - the object (either subgoal or action)
  */
 function addToSandwich(type, item){
-	console.log("function addtosandwich with arguments " + type + " , "+ item);
+	alert("function addtosandwich with arguments " + type + " , "+ item);
 	if(!type.localeCompare("subgoal")){ 		
 		var subArr = getSubgoalArrayFromLocal();
 		drawSubgoal(item.id);
@@ -123,14 +123,14 @@ function addToSandwich(type, item){
 	}
     
     else {
-        console.log("Something went wrong in addToSandwich OH GOD PANIC", type, item);
+        alert("Something went wrong in addToSandwich OH GOD PANIC", type, item);
     }
 	
 }
 
 //defines what a preIdealAction, postIdealAction, and idealAction are
 function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyTextPost, facetsPost) {
-	console.log("function saveIdealAction");
+	alert("function saveIdealAction");
 	var currArray = getSubgoalArrayFromLocal();
 	var targetSubgoal = currArray[(currArray.length - 1)];
 	var preIdealAction = {
@@ -165,7 +165,7 @@ function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyT
 //Creates a new preIdealAction object and saves it to local storage on the current subgoal's actions
 //Pre: subgoalArray isn't empty
 function savePreIdealAction (name, yesnomaybe, whyText, facets) {
-	console.log("function savePreIdealAction");
+	alert("function savePreIdealAction");
 
 	//gets the current subgoal from the subgoal array
 	var currArray = getSubgoalArrayFromLocal();
@@ -188,7 +188,7 @@ function savePreIdealAction (name, yesnomaybe, whyText, facets) {
 //Creates a new postIdealAction object and saves it to local storage on the current subgoal's actions
 //Pre: subgoalArray isn't empty, and the current preAction isn't null
 function savePostIdealAction (name, yesnomaybe, whyText, facets) {
-	console.log("function savePostIdealAction");
+	alert("function savePostIdealAction");
     var currPreAction = getVarFromLocal("currPreAction");
 	var postIdealAction = {
 		actionId: currPreAction.actionId,  //Check this when done
@@ -210,7 +210,7 @@ function savePostIdealAction (name, yesnomaybe, whyText, facets) {
 *	Post: target subgoal's actions array has an action object made of pre and post action objects.
 */
 function glueActionsAndSave (action, postAction) {
-    	console.log("function glueActionsandSave");
+    	alert("function glueActionsandSave");
     //Get the associated image's (screenshot of action) URL from local
     var currImgURL = localStorage.getItem("currImgURL"); 
     //Make the object
@@ -226,7 +226,7 @@ function glueActionsAndSave (action, postAction) {
     //Save it to local
     var currArray = getSubgoalArrayFromLocal();
     if (!currArray) {
-        console.log("Something went wrong, can't find the subgoal array");
+        alert("Something went wrong, can't find the subgoal array");
     }
     else {
         var targetSubgoal = currArray[(currArray.length - 1)];      //The last subgoal added
@@ -251,7 +251,7 @@ function glueActionsAndSave (action, postAction) {
 *	Post: item is in local storage.
 */
 function saveVarToLocal (nameOfThingToSave, thingToSave) {
-		console.log("function saveVarToLocal");
+		alert("function saveVarToLocal");
 	localStorage.setItem(nameOfThingToSave, JSON.stringify(thingToSave));
 	//console.log("Saved: " + nameOfThingToSave + " " + thingToSave);
 }
@@ -314,7 +314,7 @@ $( window ).unload(function() {
 //Happens after refresh
 //confused about when this happens exactly
 function reloadSandwich () {
-	console.log("Reloading sandwich menu...");
+	alert("Reloading sandwich menu...");
 	var sidebarHTML = localStorage.getItem('sidebarHTML');
 	//console.log(sidebarHTML);
 	var subgoalDiv = sidebarBody().find('#subgoalList');
@@ -365,7 +365,7 @@ function reloadSandwich () {
 				
 			}
 		});
-		console.log("Sandwich menu loaded");
+		alert("Sandwich menu loaded");
 	}
 	else {
 	}
