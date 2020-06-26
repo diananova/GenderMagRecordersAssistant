@@ -61,6 +61,7 @@ function editSubgoal(subgoalNum){
  * Params: subgoalNum - id of the subgoal to make (may or may not be the current subgoal)
  */
 function drawSubgoal(subgoalId){
+	alert("subgoalId: " + subgoalId);
 	var id = "#GenderMagFrame";
 	var file = "/templates/subgoal.html";
 
@@ -83,11 +84,14 @@ function drawSubgoal(subgoalId){
 		//local subgoal
 		var subgoal;
 		if(subgoals[subgoalId - 1] !== undefined && subgoals[subgoalId - 1].name !== subName){
+			alert("something is weird");
 			subName = subgoals[subgoalId - 1].name;
 			sidebarBody().find('#editSubName').hide();
             subgoal = subgoals[subgoalId - 1];
+            alert("new subgoal: " + subgoalId);
+
 		} else{
-		    subgoal =  subgoals[subgoals.length-1];
+		    subgoal = subgoals[subgoals.length-1];
         }
 
 		//set up header and edit subgoal buttons

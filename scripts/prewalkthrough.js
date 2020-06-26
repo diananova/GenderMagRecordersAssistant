@@ -18,6 +18,7 @@
  * 	The user is on the first subgoal.
  */
 function preWalkthrough (id, file) {
+	alert("new1");
 	var el = $(id).contents().find('body');
 	el.empty();
 	appendTemplateToElement(el,file);
@@ -293,6 +294,7 @@ function handlePreWalkthroughInfo () {
 	//If the state variable is set, reload previous input
 	var isSetSubName = statusIsTrue("gotSubgoalName");
 	if (isSetSubName) {
+		alert("isSetSubName");
 		//Restore from previous state
 		var subgoalArray = getSubgoalArrayFromLocal();
 		if (!subgoalArray) {
@@ -325,6 +327,7 @@ function handlePreWalkthroughInfo () {
 				subgoalId++;
 				localStorage.setItem("numSubgoals", subgoalId);
 			}
+			alert("oh hello. subgoalId: " + subgoalId);
             sidebarBody().find("#editTeam").hide();
             sidebarBody().find("#editPersona").hide();
             sidebarBody().find("#editScenario").hide();
@@ -334,6 +337,7 @@ function handlePreWalkthroughInfo () {
 	}
 	
 	else {
+		alert("!isSetSubName");
 		//Happens if gotSubgoalName is false
 		sidebarBody().find('body').off('click', '#submitSubgoal').on('click', '#submitSubgoal', function() {
             if (sidebarBody().find("#subgoalInput").val() === "") {
@@ -356,6 +360,7 @@ function handlePreWalkthroughInfo () {
                     localStorage.setItem("numSubgoals", subgoalId);
                     
                 }
+                saveSubgoal(subgoalId, subName, 0,0,0);
                 drawSubgoal(subgoalId);
             }
 		});

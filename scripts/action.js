@@ -318,6 +318,8 @@ function actionLoop(el){
 			var numSubgoals = Number(localStorage.getItem("numSubgoals"));
 			numSubgoals++;
 			localStorage.setItem("numSubgoals", numSubgoals)
+					var subName = localStorage.getItem("currSubgoalName");
+					saveSubgoal(numSubgoals, subName, 0,0,0);
 			drawSubgoal(numSubgoals); //creates undefined unnamed subgoal
 		}
 	});
