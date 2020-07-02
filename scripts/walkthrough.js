@@ -10,6 +10,15 @@
  *   creating the current subgoal and should not be called on any subgoal that is not the current subgoal.
  * Params: subgoalNum - number of the subgoal to edit (should be the current subgoal)
  */
+
+
+function deleteAction(subgoalId, actionId) {
+	alert("delete action!");
+}
+
+function editAction() {
+	alert("edit action!"); //much more complicated than delete
+}
 function editSubgoal(subgoalNum){
 	//Show subgoal name field, hide subgoal questions
 	//sidebarBody function is from file utilities.js
@@ -85,7 +94,7 @@ function drawSubgoal(subgoalId){
 
 	sidebarBody().find('body').off('click', '#editSubName').on('click', '#editSubName', function(){editSubgoal(subgoalId);});
 	//DIANA: 
-	sidebarBody().find('body').on('click', '#deleteActionButton', function(){deleteAction();});
+		sidebarBody().find('body').on('click', '#deleteActionButton', function(){deleteAction(subgoalId, actionId);}); //DOESN'T WORK
 	sidebarBody().find('body').on('click', '#editActionButton', function(){editAction();});
 	//END
 	sidebarBody().find('body').off('click', '#addAction').on('click', '#addAction', function(){ //helper function saveSubgoalAnswers?
