@@ -1,3 +1,11 @@
+/*
+ * File Name: saveState.js
+ * Functions: saveSubgoal, addToSandwich, saveIdealAction, savePreIdealAction, savePostIdealAction,
+ 	glueActionsAndSave, saveVarToLocal, getVarFromLocal, getSubgoalArrayFromLocal, reloadSandwich,
+ 	sideSubgoalExpandy, loadActionAnswersTemplate, showMeTheStringYNM, showMeTheStringFacets
+ * Description: This file contains functions to handle local storage/organization of subgoals and actions
+ */
+
 var subgoalArray = [];
 
 //Creates a new subgoal and saves it to local storage at the end of subgoalArray
@@ -11,22 +19,29 @@ function saveSubgoal (id, name, yesnomaybe, whyText, facets) {
 		actions: []
 	};
 
-	if(id > subgoalArray.length){
-		var subArr = getSubgoalArrayFromLocal();
-		if (!subArr) {
-			subArr = subgoalArray;
+//might be causing bugs
+//problem: using id for array index?
+	if(id > subgoalArray.length){  // new subgoal?
+		var subArr = getSubgoalArrayFromLocal(); // from local storage
+		if (!subArr) {  
+			subArr = subgoalArray; //if array not found in local storage (first subgoal?), initialize with subgoalArray
 		}
-		subArr[id-1] = subgoal;
-		localStorage.setItem("subgoalArray", JSON.stringify(subArr));	
+		subArr[id-1] = subgoal;  //save subgoal (who assigns id? What if it's not the right index? what if id=0?)
+		localStorage.setItem("subgoalArray", JSON.stringify(subArr));  //update subgoalArray in local storage	
         addToSandwich("subgoal",subgoal);
 	}
-	else{
+	else{  //update existing subgoal? 
 		var subArr = getSubgoalArrayFromLocal();
 		subArr[id-1] = subgoal;
 		localStorage.setItem("subgoalArray", JSON.stringify(subArr));		
 	}
 }
 
+/*
+ * Function: addToSandwich
+ * Description: This function handles display of subgoals and actions in the expandable sidebar
+ * Params: type - either subgoal or idealAction, item - the object (either subgoal or action)
+ */
 function addToSandwich(type, item){
 	
 	if(!type.localeCompare("subgoal")){ 		
@@ -34,6 +49,7 @@ function addToSandwich(type, item){
 		drawSubgoal(item.id);
         var arrowSRC=chrome.extension.getURL("images/arrow_collapsed.png");
 		var sideSubgoal = '<div stateVar=0 superCoolAttr=' + item.id + ' style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:blue;text-decoration:underline;margin:5px;" id="sideSubgoal' + item.id + '"> <img id="sideSubgoalImg' + item.id + '" src="' + arrowSRC + '"></img> Subgoal ' + item.id + ': ' + item.name + '</div>';
+		// what exactly is the goal here (last subgoal or out of bounds)
 		if (item.id >= subArr.length) {
             var foundIt = false;
             sidebarBody().find('#subgoalList').children().each(function () {
@@ -42,6 +58,7 @@ function addToSandwich(type, item){
                     foundIt = true;
                 }
             });
+            // should the item id not be changed to be in bounds?
             if (!foundIt) {
                 sidebarBody().find("#subgoalList").append(sideSubgoal);
             }
@@ -59,12 +76,14 @@ function addToSandwich(type, item){
 		var sideActionIdToFind = item.subgoalId + "-" + item.actionId;
         var sideActionIdForClick = "#sideAction" + item.subgoalId + "-" + item.actionId;
 		var foundIt = false;
+		// update an existing action?
 		sidebarBody().find('#subgoalList').children().each(function () {
 			var currId = this.getAttribute('supercoolattr');
-			if (! sideActionIdToFind.localeCompare(currId)) {
+			if (!sideActionIdToFind.localeCompare(currId)) {
 				foundIt = true;
 			}
 		});
+		// add the action (which already exists?)
 		if (!foundIt) {
 			sidebarBody().find("#subgoalList").append(sideAction);
 			sideSubgoalExpandy(item.subgoalId, "expand");
@@ -72,6 +91,7 @@ function addToSandwich(type, item){
             actionNum++;
             localStorage.setItem("numActions", actionNum);
 		}
+		// simple display
         else {
             sidebarBody().find(sideActionIdForClick).html('Action ' + item.actionId + ': ' + item.name);
             var currArray = getSubgoalArrayFromLocal();
@@ -82,6 +102,7 @@ function addToSandwich(type, item){
 			drawAction(item.actionId, item.subgoalId);
 		});
 	}
+	// create a new action object and add to the list
 	else if(!type.localeCompare("idealAction") && !item){ 	
 		var subgoalId = localStorage.getItem("numSubgoals");
 		var actionId = localStorage.getItem("numActions");
@@ -104,6 +125,7 @@ function addToSandwich(type, item){
 	
 }
 
+//defines what a preIdealAction, postIdealAction, and idealAction are
 function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyTextPost, facetsPost) {
 	var currArray = getSubgoalArrayFromLocal();
 	var targetSubgoal = currArray[(currArray.length - 1)];
@@ -131,6 +153,7 @@ function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyT
 		preAction: preIdealAction,
 		postAction: postIdealAction
 	};
+	
 	localStorage.setItem("currPreAction", JSON.stringify(idealAction));
 	localStorage.setItem("inMiddleOfAction", "true");
 }
@@ -138,7 +161,8 @@ function saveIdealAction(name, yesnomaybe, whyText, facets, yesnomaybePost, whyT
 //Creates a new preIdealAction object and saves it to local storage on the current subgoal's actions
 //Pre: subgoalArray isn't empty
 function savePreIdealAction (name, yesnomaybe, whyText, facets) {
-    
+	
+	//gets the current subgoal from the subgoal array
 	var currArray = getSubgoalArrayFromLocal();
 	var targetSubgoal = currArray[(currArray.length - 1)];
 	var preIdealAction = {
@@ -171,6 +195,9 @@ function savePostIdealAction (name, yesnomaybe, whyText, facets) {
 	
 	//Put them together and save
     glueActionsAndSave(currPreAction, postIdealAction);
+    //Clear state variables
+    localStorage.setItem("currPreAction", "");
+    localStorage.setItem("inMiddleOfAction", "false");		
 }
 
 
@@ -181,7 +208,7 @@ function savePostIdealAction (name, yesnomaybe, whyText, facets) {
 */
 function glueActionsAndSave (action, postAction) {
     
-    //Get the associated image's URL from local
+    //Get the associated image's (screenshot of action) URL from local
     var currImgURL = localStorage.getItem("currImgURL"); 
     //Make the object
     var idealAction = {
@@ -281,11 +308,13 @@ $( window ).unload(function() {
 
 
 //Happens after refresh
+//confused about when this happens exactly
 function reloadSandwich () {
 	console.log("Reloading sandwich menu...");
 	var sidebarHTML = localStorage.getItem('sidebarHTML');
 	//console.log(sidebarHTML);
 	var subgoalDiv = sidebarBody().find('#subgoalList');
+	//check to see if user is on subgoals before refresh
 	if (subgoalDiv && statusIsTrue('finishedPrewalkthrough')) {
 		subgoalDiv.html(sidebarHTML);
 		sidebarBody().find('#subgoalList').children().each(function () {
@@ -301,8 +330,9 @@ function reloadSandwich () {
 			}
             
 			else {
-				//It's an action
+				//User was not on subgoal--was on an action before refresh
 				//console.log("action", currId);
+				//get which action under which subgoal
 				var thisActionNum = Number(currId[currId.length-1]);
                 var thisSubNum = Number(currId[0]);
 				var subgoals = getSubgoalArrayFromLocal();
@@ -321,6 +351,7 @@ function reloadSandwich () {
 							actionName = subgoals[ thisSubNum-1 ].actions[ thisActionNum-1 ].name;
 						}
 						else {
+							//they name the function for the user?
 							actionName = "Lights, Camera";
 						}
 						sidebarBody().find('#actionNameInput').html(actionName);
@@ -468,7 +499,6 @@ function loadActionAnswersTemplate (actionId, subgoalId) {
 }
 
 
-
 //Iterates through the passed YNM object to see which values are true and puts the right string on the answers template in the passed id.
 function showMeTheStringYNM (targetId, targetObj) {
 	
@@ -476,9 +506,11 @@ function showMeTheStringYNM (targetId, targetObj) {
 	var propsFound = 0;
 	for (var prop in targetObj) {
 		if (targetObj[prop] == true) {
+			//adds the first string in targetObj to myString
 			if (propsFound == 0) {
 				myString = myString.concat(prop);
 			}
+			//concatenates the strings after the first string separated by a comma
 			else {
 				myString = myString.concat(", ", prop);
 			}
@@ -501,6 +533,7 @@ function showMeTheStringFacets (targetId, targetObj) {
 			propsFound++;
 		
 			//Switch statement-ish on the facet
+			//If it is the first prop found, add the true value without comma. Concatenates the rest of the true values with commas afterwards.
 			if (foundFacet == "info") {
 				if (propsFound == 1) {
 					myString = myString.concat("Information Processing Style");

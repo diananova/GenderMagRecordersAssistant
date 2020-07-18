@@ -28,6 +28,9 @@ function preWalkthrough (id, file) {
 	sidebarBody().find('body').off('click', '#saveAndExit').on('click', '#saveAndExit', function() {
 		saveAndExit("slider");
 	});
+	sidebarBody().find('body').off('click', '#justExit').on('click', '#justExit', function() {
+		justExit("slider");
+	});
 
 }
 
@@ -364,6 +367,8 @@ function handlePreWalkthroughInfo () {
                     localStorage.setItem("numSubgoals", subgoalId);
                     
                 }
+				//save a dummy subgoal so it can be reached again if the user clicks away
+                saveSubgoal(subgoalId, subName, 0, "", 0);
                 drawSubgoal(subgoalId);
             }
 		});
