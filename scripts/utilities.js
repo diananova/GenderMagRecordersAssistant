@@ -187,3 +187,11 @@ function saveAndExit(exitType){
 		}
 	});
 }
+
+function toggle(){
+	var slideout = document.getElementById("slideout");
+	var GenderMagFrame = document.getElementById("GenderMagFrame");
+
+	document.getElementById('slideout').style.display = 'block' ? 'none' : 'block';
+	document.getElementById('GenderMagFrame').style.display = 'block' ? 'none' : 'block';
+}

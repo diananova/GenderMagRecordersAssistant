@@ -21,15 +21,14 @@ var screenShotURL;
 		}});
 	
 	/*Send request to current tab when page action is clicked*/
-	chrome.pageAction.onClicked.addListener(function(tab) {
-		var extensionID = chrome.runtime.id;
-		chrome.management.get(extensionID, function(ex) {
-			console.log("Checking",ex,"-",extensionID);
-			if(!ex.enabled){
-				Notify("Extension reloaded!",ex.name+" was found crashed, and reloaded!");
-				chrome.management.setEnabled(extensionID,true);
-			}
-		});
+		chrome.pageAction.onClicked.addListener(function(tab) {
+		alert("icon has been clicked");
+
+		var slideout = document.getElementById("slideout");
+		var GenderMagFrame = document.getElementById("GenderMagFrame");
+
+		document.getElementById('slideout').style.display = 'block' ? 'none' : 'block';
+		document.getElementById('GenderMagFrame').style.display = 'block' ? 'none' : 'block';
 		//TODO: Think about creating open/close function and call it here?
 		/*OLD CODE HERE DON'T DELETE UNTIL TO DO IS RESOLVED*/
 		//chrome.tabs.executeScript(null, { file: "./jquery-ui-1.12.1/jquery.js" }, function() {
