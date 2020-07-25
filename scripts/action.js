@@ -271,7 +271,7 @@ function actionLoop(el){
             saveIdealAction(actionName, yesNoMaybe, whyText, facets, yesNoMaybe, whyText, facets);
 			$(el).remove();
         	setStatusToFalse("drewToolTip");
-			overlayScreen("");
+			overlayScreen();
 			preActionQuestions(el);
 
         	//Reset action states
@@ -396,7 +396,7 @@ function actionLoop(el){
  */
 function reloadToolTipState () {
 	//set up tool tip (skipping screenshot)
-	overlayScreen("onlyToolTip");
+	onlyToolTip()();
 	var toolTip = document.getElementById("myToolTip");
 
 	//if session is at end, open to action loop & trigger continue click to get to last page

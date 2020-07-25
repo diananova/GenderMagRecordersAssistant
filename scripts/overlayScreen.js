@@ -20,15 +20,14 @@ chrome.runtime.onMessage.addListener(
 });
 
 /*
- * Function: overlayScreen
- * Description: This function contains the functionality for taking the screen capture and creating the pop up window
+ * Function: onlyToolTip and overlayScreen
+ * Description: These functions contain the functionality for taking the screen capture and creating the pop up window
  *   with the canvas that displays the image.
- * Params: onlyDraw - tells whether to go straight to drawing the pop up ("onlyToolTip")
- *   or to take the screenshot first ("")
  */
-function overlayScreen(onlyDraw){
-	//If skipping screenshot and loading tooltip window from local storage
-	if (onlyDraw === "onlyToolTip") {
+
+ // go straight to drawing the pop up 
+function onlyToolTip() {
+		//If skipping screenshot and loading tooltip window from local storage
 		closeSlider();
 		sidebarBody().find("#nukeStatus").show();
 		var canvasContainer;
@@ -223,9 +222,10 @@ function overlayScreen(onlyDraw){
 		        $("#imageAnnotation").remove();
 		    });
 		});
-	}
-	
-	else {
+}
+// take the screenshot first
+function overlayScreen(){
+
 		//close slider to prepare for screenshot box cursor
 		closeSlider();
 		sidebarBody().find("#nukeStatus").show();
@@ -386,7 +386,7 @@ function overlayScreen(onlyDraw){
 		}
 		init();
 
-    }
+    
 }
 
 /*
