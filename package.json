@@ -1,0 +1,23 @@
+{
+  "name": "gendermagrecordersassistant",
+  "version": "1.0.0",
+  "description": "<a href=\"http://gendermag.org\" title=\"Gendermag\" >     <img src=\"http://gendermag.org/images/rsz_profile_pic.png\"      width=\"180\" height=\"180\" style=\"margin-top: 10px;\" align=\"left\">   </a>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diananova/GenderMagRecordersAssistant.git"
+  },
+  "author": "Elizabeth Labor <em.labor@nyu.edu>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diananova/GenderMagRecordersAssistant/issues"
+  },
+  "homepage": "https://github.com/diananova/GenderMagRecordersAssistant#readme",
+  "devDependencies": {
+    "cypress": "^4.12.1",
+    "cypress-browser-extension-plugin": "Strajk/cypress-browser-extension-plugin#15f14eaad4c0602339ddd67aafd9ec9d9145936b"
+  }
+}
