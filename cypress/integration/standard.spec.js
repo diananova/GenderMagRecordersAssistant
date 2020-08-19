@@ -4,6 +4,9 @@
 context('Pre-walkthrough', () => {
   beforeEach(() => {
     cy.visit('https://example.cypress.io/commands/actions')
+
+
+
   })
 
 // Helper functions for dealing with iframes
@@ -30,11 +33,29 @@ const getIframeBody = (name) => {
   .then(cy.wrap)
 }
 
-	it('clicks popup', () =>{
-		getIframeBody("slideout").click()
-		getIframeBody("GenderMagFrame").find('button#startGenderMagButton').should('exist')
-	})
+const getGM = () => {
+  return getIframeBody("GenderMagFrame")
+}
 
-	// TODO: go through the rest of the pre-walkthrough
+	it('does prewalkthrough', () => {
+    // open the slider and click the start button
+    getIframeBody("slideout").click()
+		getGM().find('#startGenderMagButton').should('exist')
+    getGM().find('#startGenderMagButton').click()
+    getGM().find('#sideBySide').should('exist')
+
+    // enter team name
+    getGM().find('#teamInput').type('RYS')
+    getGM().find('#submitTeam').click()
+    // select Abi
+    getGM().find('#submitPersona').click()
+    // enter she/her pronouns
+    getGM().find('#pronounInput').type('she')
+    getGM().find('#possessiveInput').type('her')
+    getGM().find('#submitPronoun').click()
+    // enter the scenario
+    getGM().find('#scenarioInput').type('scenario')
+    getGM().find('#submitScenario').click()
+  })
 
 })
